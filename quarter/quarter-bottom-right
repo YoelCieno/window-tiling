@@ -2,6 +2,4 @@
 BIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 source "$BIN_ROOT/tiling-common.sh"
 
-# Anchor at bottom‑right: left edge starts at middle + gap, y = half screen height
-#wmctrl -r :ACTIVE: -e 0,$((ASIDE_GAP + SW/2)),$((SH/2)),$((SW/2)),$((ASIDE_GAP + SH/2))
-wmctrl -r :ACTIVE: -e 0,$((SW/2)),$((SH/2)),$((SW/2)),$((SH/2))
+wmctrl -r :ACTIVE: -e 0,$W_1_2,$H_1_2,$W_1_2,$H_1_2

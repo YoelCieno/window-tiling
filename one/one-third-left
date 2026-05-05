@@ -2,4 +2,4 @@
 BIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 source "$BIN_ROOT/tiling-common.sh"
 
-wmctrl -r :ACTIVE: -e 0,0,0,$((SW/3)),$SH
+wmctrl -r :ACTIVE: -e 0,0,0,$W_1_3,$SH
