@@ -20,36 +20,27 @@ H_1_2=$(( SH / 2 ))
 H_1_4=$(( SH / 4 ))
 
 # ── Fixed adjustment deltas (pixels) ────────────────────────
-W_STEP=200   # Width step (+ to widen, - to narrow)
-H_STEP=100    # Height step (+ to tall, - to shorten)
+W_STEP=100   # Width step (+ to widen, - to narrow)
+H_STEP=50    # Height step (+ to tall, - to shorten)
 
 # ── Helper: get active window geometry ────────────────────────
 get_active_geometry() {
-    local wid
-    wid=$(xdotool getactivewindow 2>/dev/null) || {
+    local dec_wid hex_wid
+    dec_wid=$(xdotool getactivewindow 2>/dev/null) || {
         echo "Error: No active window or xdotool not available" >&2
         return 1
     }
-    eval $(xdotool getwindowgeometry --shell "$wid") || {
-        echo "Error: Failed to get window geometry" >&2
-        return 1
-    }
-    # Return window ID for wmctrl usage
-    echo "$wid"
+    # Convert decimal xdotool ID to hex wmctrl ID
+    hex_wid=$(printf "0x%x" "$dec_wid")
+    # Get geometry vars and export them to parent shell
+    eval "$(xdotool getwindowgeometry --shell "$dec_wid")"
+    # Return hex window ID (for wmctrl) and geometry on stdout
+    echo "$hex_wid $X $Y $WIDTH $HEIGHT"
 }
 
-# ── Helper: apply window geometry ────────────────────────────────
-apply_window_geometry() {
-    local wid="$1"
-    local new_w="$2"
-    local new_h="$3"
-    local x="${4:-$X}"
-    local y="${5:-$Y}"
-
-    wmctrl -i -r "$wid" -e 0,"$x","$y",$new_w,$new_h 2>/dev/null || {
-        echo "Error: wmctrl failed" >&2
-        return 1
-    }
+# Parse get_active_geometry output to set variables
+load_active_geometry() {
+    read -r WID X Y WIDTH HEIGHT <<< "$(get_active_geometry)"
 }
 
 # ── Helper: clamp value within bounds ────────────────────────────
@@ -60,4 +51,18 @@ clamp() {
     [ "$val" -lt "$min" ] && val=$min
     [ "$val" -gt "$max" ] && val=$max
     echo "$val"
+}
+
+# ── Helper: apply window geometry ────────────────────────────────
+apply_window_geometry() {
+    local wid="$1"
+    local updated_w="$2"
+    local updated_h="$3"
+    local x="${4:-$X}"
+    local y="${5:-$Y}"
+
+    wmctrl -i -r "$wid" -e 0,"$x","$y",$updated_w,$updated_h 2>/dev/null || {
+        echo "Error: wmctrl failed" >&2
+        return 1
+    }
 }

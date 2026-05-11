@@ -2,7 +2,6 @@
 BIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 source "$BIN_ROOT/tiling-common.sh"
 
-WID=$(get_active_geometry) || exit $?
-
+load_active_geometry
 UPDATED_HEIGHT=$(clamp $((HEIGHT + H_STEP)) 1 $SH)
 apply_window_geometry "$WID" "$WIDTH" "$UPDATED_HEIGHT"
