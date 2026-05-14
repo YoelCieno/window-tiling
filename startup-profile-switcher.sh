@@ -6,7 +6,7 @@ choice=$(zenity --list \
     --column="Profile" Development Personal Minimal \
     --width=300 --height=250)
 
-# Save the chosen profile so devilspie2 can read it
+# Save the chosen profile to read it
 # echo "$choice" > /tmp/startup_profile
 
 case "$choice" in

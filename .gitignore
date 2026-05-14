@@ -1,1 +1,8 @@
 .serena/
+# uv tool installed binaries (auto-generated symlinks)
+serena
+serena-hooks
+aider
+llamastash
+uv
+uvx
